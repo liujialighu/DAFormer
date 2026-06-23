@@ -1,0 +1,164 @@
+cityscapesscripts==2.2.0
+cycler==0.10.0
+gdown==4.2.0
+humanfriendly==9.2
+kiwisolver==1.2.0
+kornia==0.5.8
+matplotlib==3.4.2
+numpy==1.19.2
+opencv-python==4.4.0.46
+pandas==1.1.3
+Pillow==8.3.1
+prettytable==2.1.0
+pyparsing==2.4.7
+pytz==2020.1
+PyYAML==5.4.1
+scipy==1.6.3
+seaborn==0.11.1
+timm==0.3.2
+torch==1.7.1+cu110
+torchvision==0.8.2+cu110
+tqdm==4.48.2
+typing-extensions==3.7.4.3
+wcwidth==0.2.5
+yapf==0.31.0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TypeError: imgs must be a list, but got <class 'torch.Tensor'>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export PYTHONPATH=$(pwd):$PYTHONPATH
+python tools/test_dataloader.py
+python tools/test_dataset.py
+
+
+训练代码命令行
+export PYTHONPATH=$(pwd):$PYTHONPATH
+python tools/train.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    --target-format png \
+    --target-img-dir /home/Liujiali/DomainData/004/train/images \
+    --output-dir work_dirs/exp_png
+
+
+
+
+
+
+python tools/train.py \
+configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+--work-dir work_dirs/debug
+
+
+
+从训练到测试 修改了 /home/Liujiali/公共/DAformer1/DAFormer-master/configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py
+/home/Liujiali/公共/DAformer1/DAFormer-master/mmseg/apis/test.py
+/home/Liujiali/公共/DAformer1/DAFormer-master/mmseg/datasets/npy_dataset.py
+/home/Liujiali/公共/DAformer1/DAFormer-master/configs/_base_/datasets/taiwan_to_jiuzhaigou_224.py
+/home/Liujiali/公共/DAformer1/DAFormer-master/tools/test.py
+
+
+
+测试代码命令行
+python tools/test.py \
+configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+work_dirs/debug/latest.pth \
+--eval mIoU \
+--show-dir work_dirs/debug/pred
+
+
+
+
+
+
+/home/Liujiali/公共/DAformer1/DAFormer-master/configs/_base_/datasets/taiwan_to_jiuzhaigou_224.py
+/home/Liujiali/公共/DAformer1/DAFormer-master/mmseg/datasets/npy_dataset.py
+/home/Liujiali/公共/DAformer1/DAFormer-master/tools/train.py
+
+
+# 目标域 npy，输出到指定目录
+export PYTHONPATH=$(pwd):$PYTHONPATH
+python tools/train.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    --output-dir work_dirs/exp00111
+120000.pth
+
+
+export PYTHONPATH=$(pwd):$PYTHONPATH
+# 目标域 png，输出到指定目录
+python tools/train.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    --target-format png \
+    --target-img-dir /home/Liujiali/DomainData/004/train/images \
+    --output-dir work_dirs/exp_png
+140000.pth
+
+# 目标域 tif，输出到指定目录
+export PYTHONPATH=$(pwd):$PYTHONPATH
+python tools/train.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    --target-format tif \
+    --target-img-dir /home/Liujiali/DomainData/palu/train/images \
+    --output-dir work_dirs/exp_tif
+
+
+
+
+
+/home/Liujiali/公共/DAformer1/DAFormer-master/tools/test.py
+/home/Liujiali/公共/DAformer1/DAFormer-master/mmseg/apis/test.py
+
+
+
+# 测试 npy 格式（默认，用 config 里的 test 配置）
+python tools/test.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    work_dirs/exp_npy/best_mIoU.pth \
+    --eval mIoU \
+    --show-dir work_dirs/exp_npy/pred
+
+# 测试 png 格式（有标签）
+export PYTHONPATH=$(pwd):$PYTHONPATH
+python tools/test.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    work_dirs/exp_png/iter_12000.pth \
+    --test-format png \
+    --test-img-dir /home/Liujiali/DomainData/004/test/images \
+    --test-ann-dir /home/Liujiali/DomainData/004/test/masks \
+    --eval mIoU \
+    --show-dir work_dirs/exp_png/pred
+
+# 测试 tif 格式（有 mask 标签）
+export PYTHONPATH=$(pwd):$PYTHONPATH
+python tools/test.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    work_dirs/exp_tif/best_mIoU_iter_4800.pth \
+    --test-format tif \
+    --test-img-dir /home/Liujiali/DomainData/palu/test/images \
+    --test-mask-dir /home/Liujiali/DomainData/palu/test/masks \
+    --eval mIoU \
+    --show-dir work_dirs/exp_tif/pred
+
+# 测试 tif 格式（无标签，只做预测可视化）
+python tools/test.py configs/daformer/taiwan2jiuzhaigou_daformer_mitb5.py \
+    work_dirs/exp_tif/best_mIoU.pth \
+    --test-format tif \
+    --test-img-dir /home/Liujiali/DomainData/palu/img \
+    --show-dir work_dirs/exp_tif/pred
